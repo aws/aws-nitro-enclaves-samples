@@ -25,7 +25,7 @@ macro_rules! create_app {
             .version(env!("CARGO_PKG_VERSION"))
             .subcommand(
                 SubCommand::with_name("server")
-                    .about("Listen on a given cid and port. If no cid is provided, use CID_ANY.")
+                    .about("Listen on a given port.")
                     .arg(
                         Arg::with_name("port")
                             .long("port")

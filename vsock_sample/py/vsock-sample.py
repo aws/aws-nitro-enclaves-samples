@@ -31,6 +31,7 @@ class VsockStream:
             if not data:
                 break
             print(data, end='', flush=True)
+        print()
         self.sock.close()
 
 
@@ -63,6 +64,7 @@ class VsockListener:
                 if not data:
                     break
                 print(data, end='', flush=True)
+            print()
             from_client.close()
 
     def send_data(self, data):

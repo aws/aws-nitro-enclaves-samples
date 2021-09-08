@@ -18,4 +18,3 @@ fn main() {
 
     nsm_driver::nsm_exit(nsm_fd);
 }
-

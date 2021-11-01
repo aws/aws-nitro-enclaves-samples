@@ -28,6 +28,7 @@ def client_handler(args):
     endpoint = (args.cid, args.port)
     client.connect(endpoint)
     client.recv_data()
+    client.disconnect()
 
 
 def server_handler(args):
@@ -68,4 +69,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

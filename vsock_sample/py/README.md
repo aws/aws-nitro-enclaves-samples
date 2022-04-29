@@ -22,8 +22,8 @@ __Note__: You can use any other port number besides 5005 by modifying the comman
 inside the `Dockerfile.server` file.
 
 ```
-$ docker build -t vsock-sample-server -f Dockerfile.server .
-$ nitro-cli build-enclave --docker-uri vsock-sample-server --output-file vsock_sample_server.eif
+docker build -t vsock-sample-server -f Dockerfile.server .
+nitro-cli build-enclave --docker-uri vsock-sample-server --output-file vsock_sample_server.eif
 ```
 
 2. Configure the pool of memory and vCPUs (the `nitro-cli-config` script can be used)
@@ -31,20 +31,20 @@ and run the enclave using the previously-built EIF.
 
 ```
 // 2 vCPUs and 256 MiB memory
-$ nitro-cli-config -t 2 -m 256
-$ nitro-cli run-enclave --eif-path vsock_sample_server.eif --cpu-count 2 --memory 256 --debug-mode
+nitro-cli-config -t 2 -m 256
+nitro-cli run-enclave --eif-path vsock_sample_server.eif --cpu-count 2 --memory 256 --debug-mode
 ```
 
 3. Connect to the enclave console using `nitro-cli`.
 
 ```
-$ nitro-cli console --enclave-id $ENCLAVE_ID
+nitro-cli console --enclave-id $ENCLAVE_ID
 ```
 
 4. In another terminal, run the client.
 
 ```
-$ python3 vsock-sample.py client $ENCLAVE_CID 5005
+python3 vsock-sample.py client $ENCLAVE_CID 5005
 ```
 
 __Note__: Here `$ENCLAVE_CID` is a generated integer value (e.g. 16) of the enclave CID.
@@ -71,17 +71,17 @@ __Notes__:
 * You can use any other port number besides 5005 by modifying the command inside the Dockerfile.client file
 
 ```
-$ docker build -t vsock-sample-client -f Dockerfile.client .
+docker build -t vsock-sample-client -f Dockerfile.client .
 ```
 
 ```
-$ nitro-cli build-enclave --docker-uri vsock-sample-client --output-file vsock_sample_client.eif
+nitro-cli build-enclave --docker-uri vsock-sample-client --output-file vsock_sample_client.eif
 ```
 
 2. Run the server inside the parent instance.
 
 ```
-$ python3 vsock-sample.py server 5005
+python3 vsock-sample.py server 5005
 ```
 
 3. Configure the pool of memory and vCPUs (the `nitro-cli-config`
@@ -89,14 +89,14 @@ script can be used) and run the enclave using the built EIF.
 
 ```
 // 2 vCPUs and 256 MiB memory
-$ nitro-cli-config -t 2 -m 256
-$ nitro-cli run-enclave --eif-path vsock_sample_client.eif --cpu-count 2 --memory 256 --debug-mode
+nitro-cli-config -t 2 -m 256
+nitro-cli run-enclave --eif-path vsock_sample_client.eif --cpu-count 2 --memory 256 --debug-mode
 ```
 
 4. The server should print __Hello, world!__.
 
 ```
-$ python3 vsock-sample.py server 5005
+python3 vsock-sample.py server 5005
 Hello, world!
 ```
 

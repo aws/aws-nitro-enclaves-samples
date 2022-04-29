@@ -24,17 +24,17 @@ generate a fully static binary. Currently, the supported values for `$ARCH` (the
 architecture) are `x86_64` or `aarch64`.
 
 ```
-$ ARCH=$(uname -m)
-$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
-$ rustup target install $ARCH-unknown-linux-musl
+ARCH=$(uname -m)
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh -s -- -y
+rustup target install $ARCH-unknown-linux-musl
 ```
 
 4. Compile the code using `cargo`. You can find the resulting binary
 at `vsock-sample/target/$ARCH-unknown-linux-musl/release/vsock-sample`.
 
 ```
-$ cargo build --target=$ARCH-unknown-linux-musl --release
-$ cp target/$ARCH-unknown-linux-musl/release/vsock-sample .
+cargo build --target=$ARCH-unknown-linux-musl --release
+cp target/$ARCH-unknown-linux-musl/release/vsock-sample .
 ```
 ## How to use the enclave as server and the parent instance as client
 
@@ -51,8 +51,8 @@ CMD ["./vsock-sample", "server", "--port", "5005"]
 __Note__: You can use other port numbers as well.
 
 ```
-$ docker build -t vsock-sample-server -f Dockerfile.server .
-$ nitro-cli build-enclave --docker-uri vsock-sample-server --output-file vsock_sample_server.eif
+docker build -t vsock-sample-server -f Dockerfile.server .
+nitro-cli build-enclave --docker-uri vsock-sample-server --output-file vsock_sample_server.eif
 ```
 
 2. Ensure the `nitro_enclaves` driver is inserted. Configure the vCPUs and the memory pool and run the
@@ -62,20 +62,20 @@ Note: The `nitro-cli-config` script from https://github.com/aws/aws-nitro-enclav
 
 ```
 // Use 2 vCPUs and 256 MiB memory
-$ nitro-cli-config -t 2 -m 256
-$ nitro-cli run-enclave --eif-path vsock_sample_server.eif --cpu-count 2 --memory 256 --debug-mode
+nitro-cli-config -t 2 -m 256
+nitro-cli run-enclave --eif-path vsock_sample_server.eif --cpu-count 2 --memory 256 --debug-mode
 ```
 
 3. Connect to the enclave console using `nitro-cli`.
 
 ```
-$ nitro-cli console --enclave-id $ENCLAVE_ID
+nitro-cli console --enclave-id $ENCLAVE_ID
 ```
 
 4. Run the client in a terminal from the parent instance.
 
 ```
-$ ./vsock-sample client --cid $ENCLAVE_CID --port 5005
+./vsock-sample client --cid $ENCLAVE_CID --port 5005
 ```
 
 5. The enclave's console output should now look like this:
@@ -106,14 +106,14 @@ __Notes__:
 * You can use other port numbers as well.
 
 ```
-$ docker build -t vsock-sample-client -f Dockerfile.client .
-$ nitro-cli build-enclave --docker-uri vsock-sample-client --output-file vsock_sample_client.eif
+docker build -t vsock-sample-client -f Dockerfile.client .
+nitro-cli build-enclave --docker-uri vsock-sample-client --output-file vsock_sample_client.eif
 ```
 
 2. Run the server inside a terminal of the parent instance.
 
 ```
-$ ./vsock-sample server --port 5005
+./vsock-sample server --port 5005
 ```
 
 3. Ensure the `nitro_enclaves` driver is inserted. Configure the vCPUs and the memory pool and run the
@@ -123,8 +123,8 @@ Note: The `nitro-cli-config` script from https://github.com/aws/aws-nitro-enclav
 
 ```
 // Use 2 vCPUs and 256 MiB memory
-$ nitro-cli-config -t 2 -m 256
-$ nitro-cli run-enclave --eif-path vsock_sample_client.eif --cpu-count 2 --memory 256 --debug-mode
+nitro-cli-config -t 2 -m 256
+nitro-cli run-enclave --eif-path vsock_sample_client.eif --cpu-count 2 --memory 256 --debug-mode
 ```
 
 4. The server's output should now look like this:

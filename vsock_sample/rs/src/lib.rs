@@ -81,7 +81,7 @@ pub fn client(args: ClientArgs) -> Result<(), String> {
     let buf = data.as_bytes();
     let len: u64 = buf.len().try_into().map_err(|err| format!("{:?}", err))?;
     send_u64(fd, len)?;
-    send_loop(fd, &buf, len)?;
+    send_loop(fd, buf, len)?;
 
     Ok(())
 }

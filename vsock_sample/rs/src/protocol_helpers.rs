@@ -9,7 +9,7 @@ use std::os::unix::io::RawFd;
 pub fn send_u64(fd: RawFd, val: u64) -> Result<(), String> {
     let mut buf = [0u8; size_of::<u64>()];
     LittleEndian::write_u64(&mut buf, val);
-    send_loop(fd, &mut buf, size_of::<u64>().try_into().unwrap())?;
+    send_loop(fd, &buf, size_of::<u64>().try_into().unwrap())?;
     Ok(())
 }
 

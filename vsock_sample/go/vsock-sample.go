@@ -18,11 +18,11 @@ func main() {
 	flag.BoolVar(&showVersion, "version", false, "Prints version information.")
 
 	clientCmd := flag.NewFlagSet("client", flag.ExitOnError)
-	cCid := clientCmd.Int("cid", 4294967295, "The remote endpoint CID.")
-	cPort := clientCmd.Int("port", 0, "The remote endpoint port.")
+	cCid := clientCmd.Int("cid", 3, "The remote endpoint CID.")
+	cPort := clientCmd.Int("port", 5005, "The remote endpoint port.")
 
 	serverCmd := flag.NewFlagSet("server", flag.ExitOnError)
-	sPort := serverCmd.Uint("port", 0, "The local port to listen on.")
+	sPort := serverCmd.Uint("port", 5005, "The local port to listen on.")
 
 	switch os.Args[1] {
 	case "client":

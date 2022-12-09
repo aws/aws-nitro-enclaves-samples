@@ -14,4 +14,4 @@ FROM scratch
 
 COPY --from=builder /app/vsock-sample .
 
-CMD ["/vsock-sample", "server", "-port", "8080"]
+CMD ["/vsock-sample", "server", "-port", "5005"]

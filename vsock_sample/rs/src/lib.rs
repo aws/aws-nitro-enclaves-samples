@@ -22,17 +22,21 @@ const MAX_CONNECTION_ATTEMPTS: usize = 5;
 
 struct VsockSocket {
     socket_fd: RawFd,
+    shutdown_mode: Shutdown,
 }
 
 impl VsockSocket {
-    fn new(socket_fd: RawFd) -> Self {
-        VsockSocket { socket_fd }
+    fn new(socket_fd: RawFd, shutdown_mode: Shutdown) -> Self {
+        VsockSocket {
+            socket_fd,
+            shutdown_mode,
+        }
     }
 }
 
 impl Drop for VsockSocket {
     fn drop(&mut self) {
-        shutdown(self.socket_fd, Shutdown::Both)
+        shutdown(self.socket_fd, self.shutdown_mode)
             .unwrap_or_else(|e| eprintln!("Failed to shut socket down: {:?}", e));
         close(self.socket_fd).unwrap_or_else(|e| eprintln!("Failed to close socket: {:?}", e));
     }
@@ -58,6 +62,7 @@ fn vsock_connect(cid: u32, port: u32) -> Result<VsockSocket, String> {
                 None,
             )
             .map_err(|err| format!("Failed to create the socket: {:?}", err))?,
+            Shutdown::Write,
         );
         match connect(vsocket.as_raw_fd(), &sockaddr) {
             Ok(_) => return Ok(vsocket),
@@ -104,7 +109,11 @@ pub fn server(args: ServerArgs) -> Result<(), String> {
     listen_vsock(socket_fd, BACKLOG).map_err(|err| format!("Listen failed: {:?}", err))?;
 
     loop {
-        let fd = accept(socket_fd).map_err(|err| format!("Accept failed: {:?}", err))?;
+        let vsocket = VsockSocket::new(
+            accept(socket_fd).map_err(|err| format!("Accept failed: {:?}", err))?,
+            Shutdown::Read,
+        );
+        let fd = vsocket.as_raw_fd();
 
         // TODO: Replace this with your server code
         let len = recv_u64(fd)?;

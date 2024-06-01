@@ -29,7 +29,11 @@ pub fn send_loop(fd: RawFd, buf: &[u8], len: u64) -> Result<(), String> {
         let size = match send(fd, &buf[send_bytes..len], MsgFlags::empty()) {
             Ok(size) => size,
             Err(nix::Error::Sys(EINTR)) => 0,
-            Err(err) => return Err(format!("{:?}", err)),
+            Err(err) => {
+                return Err(format!(
+                    "{err:?}: sent {recv_bytes} bytes of expected {len}"
+                ))
+            }
         };
         send_bytes += size;
     }
@@ -46,7 +50,11 @@ pub fn recv_loop(fd: RawFd, buf: &mut [u8], len: u64) -> Result<(), String> {
         let size = match recv(fd, &mut buf[recv_bytes..len], MsgFlags::empty()) {
             Ok(size) => size,
             Err(nix::Error::Sys(EINTR)) => 0,
-            Err(err) => return Err(format!("{:?}", err)),
+            Err(err) => {
+                return Err(format!(
+                    "{err:?}: received {recv_bytes} bytes of expected {len}"
+                ))
+            }
         };
         recv_bytes += size;
     }

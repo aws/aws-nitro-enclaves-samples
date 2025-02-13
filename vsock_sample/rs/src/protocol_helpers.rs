@@ -31,7 +31,7 @@ pub fn send_loop(fd: RawFd, buf: &[u8], len: u64) -> Result<(), String> {
             Err(nix::Error::Sys(EINTR)) => 0,
             Err(err) => {
                 return Err(format!(
-                    "{err:?}: sent {recv_bytes} bytes of expected {len}"
+                    "{err:?}: sent {send_bytes} bytes of expected {len}"
                 ))
             }
         };

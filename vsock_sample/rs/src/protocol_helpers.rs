@@ -48,6 +48,11 @@ pub fn recv_loop(fd: RawFd, buf: &mut [u8], len: u64) -> Result<(), String> {
 
     while recv_bytes < len {
         let size = match recv(fd, &mut buf[recv_bytes..len], MsgFlags::empty()) {
+            Ok(0) => {
+                return Err(format!(
+                    "Peer closed connection; received {recv_bytes} bytes of expected {len}"
+                ))
+            }
             Ok(size) => size,
             Err(nix::Error::Sys(EINTR)) => 0,
             Err(err) => {
